@@ -22,7 +22,7 @@ services:
       - mongodb-auth
     volumes:
       - ./Auth:/app
-      - auth-modules:/app/node_modules
+      - /app/node_modules
 
   mongodb-auth:
     image: mongo:latest
@@ -41,5 +41,4 @@ services:
 
 volumes:
   mongodb_auth_datas:
-  api-gateway-modules:
-  auth-modules:
+
