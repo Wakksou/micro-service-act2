@@ -1,0 +1,45 @@
+
+services:
+  api-gateway:
+    build:
+      context: ./APIGateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - micro-auth
+    volumes:
+      - ./APIGateway:/app
+      - api-gateway-modules:/app/node_modules
+
+  micro-auth:
+    build:
+      context: ./Auth
+      dockerfile: Dockerfile
+    container_name: micro-auth
+    depends_on:
+      - mongodb-auth
+    volumes:
+      - ./Auth:/app
+      - auth-modules:/app/node_modules
+
+  mongodb-auth:
+    image: mongo:latest
+    container_name: mongodb-auth
+    restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_auth_datas:/data/db
+
+volumes:
+  mongodb_auth_datas:
+  api-gateway-modules:
+  auth-modules:
